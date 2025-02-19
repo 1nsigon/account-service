@@ -1,0 +1,102 @@
+services:
+  sea:
+    image: mysql:9.2
+    restart: always
+    environment:
+      MYSQL_DATABASE: baa
+      MYSQL_ROOT_PASSWORD: roots
+      MYSQL_USER: oon
+      MYSQL_PASSWORD: oon
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+
+
+  account-service:
+    image: oonsigon/account-service:0.0.1-SNAPSHOT
+    ports:
+      - "9897:9897"
+    depends_on:
+      - sea
+      - bank-server
+    environment:
+      SPRING_APPLICATION_NAME: account-service
+      SPRING_DATASOURCE_URL: jdbc:mysql://sea:3306/baa
+      SPRING_DATASOURCE_USERNAME: oon
+      SPRING_DATASOURCE_PASSWORD: oon
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_GENERATE_DDL: "true"
+      SPRING_JPA_SHOW_SQL: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://bank-server:8761/eureka/
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: "true"
+      EUREKA_CLIENT_FETCH_REGISTRY: "true"
+
+
+
+  bank-server:
+      image: oonsigon/bank-server:0.0.1-SNAPSHOT
+      ports:
+        - "8761:8761"
+      environment:
+        SPRING_APPLICATION_NAME: bank-server
+        EUREKA_CLIENT_REGISTER_WITH_EUREKA: "false"
+        EUREKA_CLIENT_FETCH_REGISTRY: "false"
+
+  bank-app:
+    image: oonsigon/bank-app:0.0.1-SNAPSHOT
+    ports:
+      - "8088:8088"
+    depends_on:
+      - bank-server
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://bank-server:8761/eureka/
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: "true"
+      EUREKA_CLIENT_FETCH_REGISTRY: "true"
+
+  bank-security:
+    image: oonsigon/bank-security:0.0.1-SNAPSHOT
+    ports:
+      - "9898:9898"
+    depends_on:
+      - bank-server
+      - sea
+    environment:
+      SPRING_APPLICATION_NAME: bank-security
+      SPRING_DATASOURCE_URL: jdbc:mysql://sea:3306/baa
+      SPRING_DATASOURCE_USERNAME: oon
+      SPRING_DATASOURCE_PASSWORD: oon
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_GENERATE_DDL: "true"
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://bank-server:8761/eureka/
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: "true"
+      EUREKA_CLIENT_FETCH_REGISTRY: "true"
+
+  bank-gateway:
+    image: oonsigon/bank-gateway:0.0.1-SNAPSHOT
+    ports:
+      - "8080:8080"
+    depends_on:
+      - bank-server
+      - bank-app
+      - account-service
+      - bank-security
+    environment:
+      SPRING_APPLICATION_NAME: bank-gateway
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://bank-server:8761/eureka/
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: "true"
+      EUREKA_CLIENT_FETCH_REGISTRY: "true"
+
+volumes:
+   mysql-data:
+
+
+
+
+
+
+
+

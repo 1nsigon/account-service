@@ -1,0 +1,46 @@
+# Gradle
+.gradle
+gradle
+build
+out
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# IDE files
+.idea
+*.iml
+*.ipr
+*.iws
+.vscode
+
+# macOS system files
+.DS_Store
+
+# Environment files
+.env
+*.env
+
+# Git
+.git
+.gitignore
+
+# Test files and directories
+test
+**/src/test
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Dependency caches
+node_modules
+
+# Security and sensitive files
+*.key
+*.pem
+secrets
