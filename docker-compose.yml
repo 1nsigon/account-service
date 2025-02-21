@@ -4,9 +4,9 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: baa
-      MYSQL_ROOT_PASSWORD: roots
-      MYSQL_USER: oon
-      MYSQL_PASSWORD: oon
+      MYSQL_ROOT_PASSWORD: myFakeRootPassword
+      MYSQL_USER: myFakeUser
+      MYSQL_PASSWORD: myFakeUser
     ports:
       - "3306:3306"
     volumes:
@@ -24,8 +24,8 @@ services:
     environment:
       SPRING_APPLICATION_NAME: account-service
       SPRING_DATASOURCE_URL: jdbc:mysql://sea:3306/baa
-      SPRING_DATASOURCE_USERNAME: oon
-      SPRING_DATASOURCE_PASSWORD: oon
+      SPRING_DATASOURCE_USERNAME: yourFakePassword
+      SPRING_DATASOURCE_PASSWORD: YourFakePassword
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_GENERATE_DDL: "true"
       SPRING_JPA_SHOW_SQL: "true"
